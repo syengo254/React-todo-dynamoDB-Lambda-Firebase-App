@@ -1,0 +1,91 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.task-form {
+  position: relative;
+  width: 100%;
+  border: 1px solid rgb(201, 201, 201);
+  padding: .5rem;
+  margin-bottom: 1rem;
+}
+
+.task-form>h4 {
+  font-weight: 400;
+  font-style: italic;
+  margin: .4rem 0;
+  font-size: 1rem;
+}
+
+div.task-input {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.task-form form label {
+  position: relative;
+  font-size: 1rem;
+  margin-right: .5rem;
+  padding-top: .1rem;
+}
+
+.task-form form input[type="text"] {
+  position: relative;
+  padding: .3rem .6rem;
+  font-size: .95rem;
+  margin-bottom: .5rem;
+  flex-grow: 1;
+  border: 1px solid rgb(201, 201, 201);
+}
+
+.task-form form div:last-child {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.task-form form button[type="submit"] {
+  font-size: 1rem;
+}
+
+.task-list {
+  position: relative;
+  width: 100%;
+  border: 1px solid rgb(201, 201, 201);
+  padding: .5rem;
+}
+
+.task-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.task-list ul li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgb(201, 201, 201);
+  margin-bottom: .4rem;
+}
+
+.task-list ul li label {
+  font-size: .8rem;
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+  margin-bottom: .2rem;
+}
+
+.task-list ul li button {
+  cursor: pointer;
+}
+
+.no-tasks {
+  font-style: italic;
+}
