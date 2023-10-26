@@ -1,69 +1,36 @@
 import React, { FormEvent } from 'react';
 import './App.css'
 
-type Task = {
-  id: number;
+import { UseTasks } from './resources/useTasks';
+
+export type Task = {
+  id?: number | string;
   title: string;
   completed: boolean;
 }
 
 function App() {
+  const { tasks, deleteTask, createTask, updateTask } = UseTasks();
+
   const [newTask, setNewTask] = React.useState('');
 
-  const [tasks, setTasks] = React.useState<Task[]>([
-    {
-      id: 1,
-      title: "Create a react firebase and firestore app",
-      completed: false,
-    },
-    {
-      id: 2,
-      title: "Watch a tutorial on React and OpenAI API",
-      completed: false,
-    },
-    {
-      id: 3,
-      title: "Create a react, aws amplify and dynamoDB apps",
-      completed: false,
-    },
-  ]);
 
-  const onSubmit = (event: FormEvent) => {
+  const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     if (newTask.length < 5) return;
 
-    setTasks((oldTasks) => ([
-      {
-        id: oldTasks.length > 0 ? (oldTasks[oldTasks.length - 1].id + 1) : 1,
-        title: newTask,
-        completed: false
-      },
-      ...oldTasks
-    ]));
+    await createTask({ title: newTask, completed: false });
 
     setNewTask('');
   }
 
-  const removeTask = (taskId: number) => {
-    console.log('removing task with id', taskId);
-    setTasks((oldTasks) => {
-      return oldTasks.filter(({ id }) => id !== taskId);
-    });
+  const removeTask = async (taskId: number) => {
+    await deleteTask(taskId);
   }
 
-  const markComplete = (taskId: number) => {
-    console.log('task with id', taskId, 'to be marked');
-    setTasks((oldTasks) => {
-      return oldTasks.map((task) => {
-        if (task.id === taskId) {
-          return {
-            ...task, completed: !task.completed
-          }
-        }
-        return task;
-      });
-    });
+  const markComplete = async (task: Task) => {
+    await updateTask(task);
   }
 
   return (
@@ -91,9 +58,9 @@ function App() {
                   <li key={task.id + task.title}>
                     <div className='task-name'>
                       <div>{index + 1}. {task.title}</div>
-                      <label>Mark complete: <input type='checkbox' id={'check' + task.id} checked={task.completed} onChange={() => markComplete(task.id)} /></label>
+                      <label>Mark complete: <input type='checkbox' id={'check' + task.id} checked={task.completed} onChange={() => markComplete(task)} /></label>
                     </div>
-                    <button onClick={() => removeTask(task.id)} type='button'>&times;</button>
+                    <button onClick={() => removeTask(task.id as number)} type='button'>&times;</button>
                   </li>
                 )
               })
