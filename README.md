@@ -17,4 +17,4 @@ The app should then run locally on port 5173.
 
 The backends for the cloud providers code is just included as the cloud infrastructure was manually created.
 
-&copyright; 2023. David Syengo. All rights reserved.
+&copy; 2023. David Syengo. All rights reserved.
