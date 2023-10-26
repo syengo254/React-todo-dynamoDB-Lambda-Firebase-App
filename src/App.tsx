@@ -21,6 +21,7 @@ function App() {
   const [tasks, setTasks] = React.useState<Task[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [updating, setUpdating] = React.useState(false);
+  const [loggedUser, setLoggedUser] = React.useState<unknown>(null);
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -82,16 +83,11 @@ function App() {
     });
   }
 
-  onAuthStateChanged(auth, () => {
-    const getTasks = async () => {
-      setLoading(true);
-      const data = await getDocs(tasksCollectionRef);
-      setTasks(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Task[]);
-      setLoading(false);
-    };
-
-    getTasks();
-  });
+  if (!loggedUser) {
+    onAuthStateChanged(auth, () => {
+      setLoggedUser(auth.currentUser)
+    });
+  }
 
   async function login() {
     await SignIn();
@@ -99,13 +95,29 @@ function App() {
 
   async function logout() {
     await SignOut();
+    setLoggedUser(null);
   }
+
+
+  // effects
+  React.useEffect(() => {
+    if (loggedUser && !tasks.length) {
+      const getTasks = async () => {
+        setLoading(true);
+        const data = await getDocs(tasksCollectionRef);
+        setTasks(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Task[]);
+        setLoading(false);
+      };
+
+      getTasks();
+    }
+  }, [loggedUser, tasks.length, tasksCollectionRef])
 
   return (
     <div>
       <h3>React Todo App + Firebase + Firestore</h3>
       <div style={{ marginBottom: '.5rem' }}>
-        {auth.currentUser ?
+        {loggedUser ?
           <><span>Hi, {auth.currentUser?.displayName}</span><button style={{ marginLeft: '.5rem' }} onClick={logout}>Sign Out</button></> :
           <button className='login-with-google-btn' onClick={login}>Sign in with Google</button>}
       </div>
@@ -121,7 +133,7 @@ function App() {
           </div>
         </form>
       </div>
-      {auth.currentUser ? <div className='task-list'>
+      {loggedUser ? <div className='task-list'>
         <h4 style={{ margin: '0.4rem 0' }}>You tasks:</h4>
         {!tasks.length && <span className='no-tasks'>{loading ? "Fetching tasks, please wait..." : "You have no tasks"}</span>}
         {tasks.length > 0 && (
