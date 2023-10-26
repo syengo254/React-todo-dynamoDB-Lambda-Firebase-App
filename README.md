@@ -1,27 +1,20 @@
-# React + TypeScript + Vite
+# React + TypeScript + Vite + AWS Lambda + GCP Firebase + AWS DynamoDB
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a simple react todo app that leverages the serverless techstacks offered by GCP and AWS.
 
-Currently, two official plugins are available:
+This repo has 3 branches:
+1. Main branch - a bare React todo app with non-persistent data.
+2. feat-aws-lamda-dynamoDB - the React todo app with persistent storage to Amazon's dynamoDB + API Gateway + Lambda functions.
+3. feat-firebase-store - the React todo app persisted by Google's Firebase/Firestore database.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+## Instructions
+Checkout any branch mentioned above and run the following commands:
+1. ``` yarn install ```
+2. ``` yarn run dev ```
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+The app should then run locally on port 5173.
 
-- Configure the top-level `parserOptions` property like this:
+The backends for the cloud providers code is just included as the cloud infrastructure was manually created.
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+&copyright; 2023. David Syengo. All rights reserved.
