@@ -13,7 +13,7 @@ const UIState = {
 }
 
 function App() {
-  const { user, isLoggedIn, SignIn, SignOut } = UseAuth();
+  const { user, isLoggedIn, SignIn, SignOut, checkingAuth } = UseAuth();
   const { tasks, createTask, updateTask, deleteTask } = UseTasks();
 
   const [title, setTitle] = React.useState('');
@@ -27,6 +27,10 @@ function App() {
     createTask(title).then(() => {
       setUIstate(UIState.idle);
     }).catch(e => console.log(e));
+  }
+
+  if (checkingAuth) {
+    return null;
   }
 
   return (

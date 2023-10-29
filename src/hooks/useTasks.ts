@@ -18,7 +18,7 @@ export function UseTasks() {
 
   const fetchTasks = async () => {
     const tasksCollectionRef = collection(db, "tasks");
-    console.log('fetching tasks...');
+    // console.log('fetching tasks...');
 
     const fetchedTasks = [] as Task[];
     try {
@@ -40,8 +40,7 @@ export function UseTasks() {
 
     try {
       const docRef = await addDoc(collection(db, "tasks"), newTask)
-
-      console.log("added new task with ID:", docRef.id);
+      //console.log("added new task with ID:", docRef.id);
 
       newTask.id = docRef.id;
       setTasks((oldTasks) => ([
@@ -68,7 +67,7 @@ export function UseTasks() {
             return itask;
           });
         });
-        console.log('task with id:', task.id, 'marked', !task.completed ? "complete" : "uncomplete");
+        // console.log('task with id:', task.id, 'marked', !task.completed ? "complete" : "uncomplete");
       })
       .catch(e => {
         console.log(e);
@@ -79,7 +78,7 @@ export function UseTasks() {
     const taskUpdate = doc(db, "tasks/" + taskId);
     deleteDoc(taskUpdate)
       .then(() => {
-        console.log('removed task with id', taskId);
+        // console.log('removed task with id', taskId);
         setTasks((oldTasks) => {
           return oldTasks.filter(({ id }) => id !== taskId);
         });

@@ -8,6 +8,7 @@ const provider = new GoogleAuthProvider();
 
 export default function UseAuth() {
   const [user, setUser] = React.useState<User | null>(auth.currentUser);
+  const [checkingAuth, setCheckingAuth] = React.useState(true);
 
   async function SignIn() {
     try {
@@ -31,12 +32,16 @@ export default function UseAuth() {
   }
 
   React.useEffect(() => {
-    onAuthStateChanged(auth, () => {
+    const unsub = onAuthStateChanged(auth, () => {
       if (!user) {
         setUser(auth.currentUser);
+        if (checkingAuth) {
+          setCheckingAuth(false);
+        }
       }
     });
-  }, [user]);
+    return unsub;
+  }, [user, checkingAuth]);
 
-  return { isLoggedIn: !!user, user, SignIn, SignOut }
+  return { isLoggedIn: !!user, user, SignIn, SignOut, checkingAuth }
 }

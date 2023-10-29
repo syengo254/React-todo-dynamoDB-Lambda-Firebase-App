@@ -18,4 +18,4 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
-console.log('firebase.js code executed');
+// console.log('firebase.js code executed');
