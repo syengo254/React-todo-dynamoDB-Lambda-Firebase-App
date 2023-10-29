@@ -80,7 +80,11 @@ function App() {
                             checked={task.completed}
                             onChange={() => updateTask(task)} /></label>
                       </div>
-                      <button onClick={() => deleteTask(task.id)} type='button'>&times;</button>
+                      <button
+                        onClick={() => window.confirm("Are you sure you want to delete the task\n'" + task.title + "'?") && deleteTask(task.id)}
+                        type='button'>
+                        &times;
+                      </button>
                     </li>
                   )
                 })
