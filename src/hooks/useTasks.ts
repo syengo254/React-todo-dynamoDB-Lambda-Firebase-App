@@ -43,10 +43,10 @@ export function UseTasks() {
       //console.log("added new task with ID:", docRef.id);
 
       newTask.id = docRef.id;
-      setTasks((oldTasks) => ([
+      setTasks([
         newTask,
-        ...oldTasks
-      ]));
+        ...tasks
+      ]);
     } catch (e) {
       console.log(e);
     }
@@ -58,16 +58,16 @@ export function UseTasks() {
     updateDoc(updatedRef, { completed: !task.completed })
       .then(() => {
         setTasks((oldTasks) => {
-          return oldTasks.map((itask) => {
+          return [...oldTasks.map((itask) => {
             if (itask.id === task.id) {
               return {
                 ...itask, completed: !itask.completed
               }
             }
             return itask;
-          });
+          })];
         });
-        // console.log('task with id:', task.id, 'marked', !task.completed ? "complete" : "uncomplete");
+        console.log('task with id:', task.id, 'marked', !task.completed ? "complete" : "uncomplete");
       })
       .catch(e => {
         console.log(e);
@@ -80,7 +80,7 @@ export function UseTasks() {
       .then(() => {
         // console.log('removed task with id', taskId);
         setTasks((oldTasks) => {
-          return oldTasks.filter(({ id }) => id !== taskId);
+          return [...oldTasks.filter(({ id }) => id !== taskId)];
         });
       })
       .catch(e => {
