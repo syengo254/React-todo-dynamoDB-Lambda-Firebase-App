@@ -26,6 +26,7 @@ function App() {
     setUIstate(UIState.loading);
     createTask(title).then(() => {
       setUIstate(UIState.idle);
+      setTitle('');
     }).catch(e => console.log(e));
   }
 
