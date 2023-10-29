@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { onAuthStateChanged, User, GoogleAuthProvider, signInWithPopup, getAuth, signOut } from 'firebase/auth'
+import { User, GoogleAuthProvider, signInWithPopup, getAuth, signOut, onAuthStateChanged } from 'firebase/auth'
 import { app } from "../firebase";
 
 const auth = getAuth(app);
@@ -9,13 +9,12 @@ const provider = new GoogleAuthProvider();
 export default function UseAuth() {
   const [user, setUser] = React.useState<User | null>(auth.currentUser);
 
-  const unSubAuthChanges = onAuthStateChanged(auth, () => {
-    setUser(auth.currentUser);
-  });
-
   async function SignIn() {
     try {
-      await signInWithPopup(auth, provider);
+      const userCreds = await signInWithPopup(auth, provider);
+      if (userCreds.user) {
+        setUser(userCreds.user);
+      }
     } catch (e) {
       console.log(e);
     }
@@ -23,12 +22,21 @@ export default function UseAuth() {
 
   async function SignOut() {
     try {
-      unSubAuthChanges();
+      // unSubAuthChanges();
       await signOut(auth);
+      setUser(null);
     } catch (e) {
       console.log(e);
     }
   }
+
+  React.useEffect(() => {
+    onAuthStateChanged(auth, () => {
+      if (!user) {
+        setUser(auth.currentUser);
+      }
+    });
+  }, [user]);
 
   return { isLoggedIn: !!user, user, SignIn, SignOut }
 }
