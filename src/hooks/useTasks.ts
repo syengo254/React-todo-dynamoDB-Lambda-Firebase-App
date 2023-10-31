@@ -17,8 +17,6 @@ export function UseTasks() {
   const [tasksError, setTasksError] = React.useState<Error | null>(null);
   const [loading, setLoading] = React.useState(false);
 
-  const tasksRef = firebase.firestore().collection("tasks");
-
   const createTask = async (title: string) => {
     const newTask: Task = {
       title: title,
@@ -62,7 +60,10 @@ export function UseTasks() {
   };
 
   React.useEffect(() => {
+    const tasksRef = firebase.firestore().collection("tasks");
+
     setLoading(true);
+
     tasksRef.onSnapshot((qSnapshot) => {
       const _tasks: unknown[] = [];
       qSnapshot.forEach((doc) => {
