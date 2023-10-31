@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { collection, addDoc, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
-import { db } from "../firebase";
+import { addDoc, updateDoc, doc, deleteDoc, collection } from 'firebase/firestore';
+import firebase, { db } from "../firebase";
 import UseAuth from './useAuth';
 
 export type Task = {
@@ -17,21 +17,7 @@ export function UseTasks() {
   const [tasksError, setTasksError] = React.useState<Error | null>(null);
   const [loading, setLoading] = React.useState(false);
 
-  const fetchTasks = async () => {
-    const tasksCollectionRef = collection(db, "tasks");
-    // console.log('fetching tasks...');
-
-    const fetchedTasks = [] as Task[];
-    try {
-      const snapshot = await getDocs(tasksCollectionRef);
-      snapshot.docs.forEach((doc) => {
-        fetchedTasks.push({ ...doc.data(), id: doc.id } as Task);
-      });
-      return fetchedTasks;
-    } catch (e) {
-      setTasksError(e as Error);
-    }
-  };
+  const tasksRef = firebase.firestore().collection("tasks");
 
   const createTask = async (title: string) => {
     const newTask: Task = {
@@ -42,12 +28,7 @@ export function UseTasks() {
     try {
       setLoading(true);
       const docRef = await addDoc(collection(db, "tasks"), newTask)
-      //console.log("added new task with ID:", docRef.id);
-      newTask.id = docRef.id;
-      setTasks((oTasks) => ([
-        newTask,
-        ...oTasks
-      ]));
+      console.log("added new task with ID:", docRef.id);
     } catch (e) {
       console.log(e);
       setTasksError(e as Error)
@@ -62,16 +43,6 @@ export function UseTasks() {
     setLoading(true);
     updateDoc(updatedRef, { completed: !task.completed })
       .then(() => {
-        setTasks((oldTasks) => {
-          return [...oldTasks.map((itask) => {
-            if (itask.id === task.id) {
-              return {
-                ...itask, completed: !itask.completed
-              }
-            }
-            return itask;
-          })];
-        });
         console.log('task with id:', task.id, 'marked', !task.completed ? "complete" : "uncomplete");
       })
       .catch(e => {
@@ -85,30 +56,22 @@ export function UseTasks() {
     const taskUpdate = doc(db, "tasks/" + taskId);
     setLoading(true);
     deleteDoc(taskUpdate)
-      .then(() => {
-        // console.log('removed task with id', taskId);
-        setTasks((oldTasks) => {
-          return [...oldTasks.filter(({ id }) => id !== taskId)];
-        });
-      })
       .catch(e => {
         console.log(e);
       }).finally(() => setLoading(false));
   };
 
   React.useEffect(() => {
-    if (user) {
-      setLoading(true);
-      fetchTasks()
-        .then((ftasks) => {
-          setTasks(ftasks as Task[]);
-        })
-        .catch(e => {
-          setTasksError(e);
-          console.log(e);
-        }).finally(() => setLoading(false));
-    }
-  }, [user])
+    setLoading(true);
+    tasksRef.onSnapshot((qSnapshot) => {
+      const _tasks: unknown[] = [];
+      qSnapshot.forEach((doc) => {
+        _tasks.push({ ...doc.data(), id: doc.id });
+      });
+      setTasks(_tasks as Task[]);
+      setLoading(false);
+    });
+  }, []);
 
-  return { tasks, createTask, updateTask, deleteTask, tasksError, loading };
+  return user ? { tasks, createTask, updateTask, deleteTask, tasksError, loading } : {};
 }

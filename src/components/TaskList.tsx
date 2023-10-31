@@ -1,16 +1,15 @@
 import TaskItem from './TaskItem';
 
 import { UseTasks } from '../hooks/useTasks';
-import { UIState } from '../utils/constants';
 
-export default function TaskList({ uiState }: { uiState: string }) {
-  const { tasks } = UseTasks();
+export default function TaskList() {
+  const { tasks, loading } = UseTasks();
 
   return (
     <div className='task-list'>
       <h4 style={{ margin: '0.4rem 0' }}>Your tasks:</h4>
       {!tasks.length && <span className='no-tasks'>
-        {uiState == UIState.loading ? "Fetching tasks, please wait..." : "You have no tasks"}
+        {loading ? "Fetching tasks, please wait..." : "You have no tasks"}
       </span>}
       {tasks.length > 0 && (
         <ul>

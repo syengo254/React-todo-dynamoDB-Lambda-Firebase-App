@@ -2,24 +2,20 @@ import React, { FormEvent } from "react";
 
 import UseAuth from "../hooks/useAuth";
 import { UseTasks } from "../hooks/useTasks";
-import { UIState } from "../utils/constants";
 
-export default function CreateTask({ uiState, setUIstate }: { uiState: string, setUIstate: React.Dispatch<React.SetStateAction<string | null>> }) {
+export default function CreateTask() {
   const { user, SignOut } = UseAuth();
 
   const { createTask, tasksError, loading } = UseTasks();
 
   const [title, setTitle] = React.useState('');
 
-  const onSubmit = async (event: FormEvent) => {
+  const onSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (title.length < 5) return;
 
-    setUIstate(UIState.loading);
-    createTask(title).then(() => {
-      setUIstate(UIState.idle);
-      setTitle('');
-    }).catch(e => console.log(e));
+    createTask && createTask(title);
+    setTitle('');
   }
 
   return (
@@ -39,7 +35,7 @@ export default function CreateTask({ uiState, setUIstate }: { uiState: string, s
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder='Type your task here'
-              disabled={uiState === UIState.updating} />
+              disabled={loading} />
           </div>
           <div>
             <button type="submit" disabled={loading}>{loading ? "Adding..." : "Add"}</button>

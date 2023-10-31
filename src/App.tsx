@@ -12,7 +12,6 @@ function App() {
   if (checkingAuth) {
     return null;
   }
-  console.log(isLoggedIn)
 
   return (
     <div>
