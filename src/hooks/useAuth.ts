@@ -10,6 +10,9 @@ export default function UseAuth() {
   const [user, setUser] = React.useState<User | null>(auth.currentUser);
   const [checkingAuth, setCheckingAuth] = React.useState(true);
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  const [unsubscribe, setUnsubscribe] = React.useState<Function | null>(null);
+
   async function SignIn() {
     try {
       const userCreds = await signInWithPopup(auth, provider);
@@ -33,15 +36,16 @@ export default function UseAuth() {
 
   React.useEffect(() => {
     const unsub = onAuthStateChanged(auth, () => {
-      if (!user) {
-        setUser(auth.currentUser);
-        if (checkingAuth) {
-          setCheckingAuth(false);
-        }
+      setUser(auth.currentUser);
+      if (checkingAuth) {
+        setCheckingAuth(false);
+      }
+      if (!user && unsubscribe !== null) {
+        unsubscribe();
       }
     });
     return unsub;
-  }, [user, checkingAuth]);
+  }, [user, checkingAuth, unsubscribe]);
 
-  return { isLoggedIn: !!user, user, SignIn, SignOut, checkingAuth }
+  return { isLoggedIn: !!user, user, SignIn, SignOut, checkingAuth, setUnsubscribe }
 }
