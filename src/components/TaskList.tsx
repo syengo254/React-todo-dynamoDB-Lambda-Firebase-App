@@ -1,7 +1,7 @@
 import TaskItem from './TaskItem';
 
-import { UIState } from "../pages/Tasks";
 import { UseTasks } from '../hooks/useTasks';
+import { UIState } from '../utils/constants';
 
 export default function TaskList({ uiState }: { uiState: string }) {
   const { tasks } = UseTasks();

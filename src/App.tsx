@@ -3,7 +3,7 @@ import React from "react";
 import UseAuth from './hooks/useAuth';
 
 import './App.css';
-import LoginPage from './pages/Login';
+const LoginPage = React.lazy(() => import('./pages/Login'));
 const TasksPage = React.lazy(() => import('./pages/Tasks'));
 
 function App() {
@@ -17,11 +17,11 @@ function App() {
   return (
     <div>
       <h3>React Todo App + Firebase + Firestore</h3>
-      {isLoggedIn ?
-        <React.Suspense fallback={<div>Loading...</div>}>
+      <React.Suspense fallback={<div>Loading...</div>}>
+        {isLoggedIn ?
           <TasksPage />
-        </React.Suspense>
-        : <LoginPage />}
+          : <LoginPage />}
+      </React.Suspense>
     </div>
   )
 }

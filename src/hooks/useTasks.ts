@@ -14,7 +14,8 @@ export function UseTasks() {
   const { user } = UseAuth();
 
   const [tasks, setTasks] = React.useState<Task[]>([]);
-  const [tasksError, setTasksError] = React.useState<unknown>(null);
+  const [tasksError, setTasksError] = React.useState<Error | null>(null);
+  const [loading, setLoading] = React.useState(false);
 
   const fetchTasks = async () => {
     const tasksCollectionRef = collection(db, "tasks");
@@ -28,7 +29,7 @@ export function UseTasks() {
       });
       return fetchedTasks;
     } catch (e) {
-      setTasksError(e);
+      setTasksError(e as Error);
     }
   };
 
@@ -39,22 +40,26 @@ export function UseTasks() {
     }
 
     try {
+      setLoading(true);
       const docRef = await addDoc(collection(db, "tasks"), newTask)
       //console.log("added new task with ID:", docRef.id);
-
       newTask.id = docRef.id;
-      setTasks([
+      setTasks((oTasks) => ([
         newTask,
-        ...tasks
-      ]);
+        ...oTasks
+      ]));
     } catch (e) {
       console.log(e);
+      setTasksError(e as Error)
+    } finally {
+      setLoading(false);
     }
   };
 
   const updateTask = (task: Task) => {
     const updatedRef = doc(db, "tasks/" + task.id);
 
+    setLoading(true);
     updateDoc(updatedRef, { completed: !task.completed })
       .then(() => {
         setTasks((oldTasks) => {
@@ -71,11 +76,14 @@ export function UseTasks() {
       })
       .catch(e => {
         console.log(e);
+      }).finally(() => {
+        setLoading(false);
       });
   }
 
   const deleteTask = (taskId: Task['id']) => {
     const taskUpdate = doc(db, "tasks/" + taskId);
+    setLoading(true);
     deleteDoc(taskUpdate)
       .then(() => {
         // console.log('removed task with id', taskId);
@@ -85,11 +93,12 @@ export function UseTasks() {
       })
       .catch(e => {
         console.log(e);
-      });
+      }).finally(() => setLoading(false));
   };
 
   React.useEffect(() => {
     if (user) {
+      setLoading(true);
       fetchTasks()
         .then((ftasks) => {
           setTasks(ftasks as Task[]);
@@ -97,9 +106,9 @@ export function UseTasks() {
         .catch(e => {
           setTasksError(e);
           console.log(e);
-        });
+        }).finally(() => setLoading(false));
     }
   }, [user])
 
-  return { tasks, createTask, updateTask, deleteTask, tasksError };
+  return { tasks, createTask, updateTask, deleteTask, tasksError, loading };
 }

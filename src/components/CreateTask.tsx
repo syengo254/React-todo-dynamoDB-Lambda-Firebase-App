@@ -2,13 +2,12 @@ import React, { FormEvent } from "react";
 
 import UseAuth from "../hooks/useAuth";
 import { UseTasks } from "../hooks/useTasks";
-
-import { UIState } from '../pages/Tasks';
+import { UIState } from "../utils/constants";
 
 export default function CreateTask({ uiState, setUIstate }: { uiState: string, setUIstate: React.Dispatch<React.SetStateAction<string | null>> }) {
   const { user, SignOut } = UseAuth();
 
-  const { createTask } = UseTasks();
+  const { createTask, tasksError, loading } = UseTasks();
 
   const [title, setTitle] = React.useState('');
 
@@ -43,9 +42,10 @@ export default function CreateTask({ uiState, setUIstate }: { uiState: string, s
               disabled={uiState === UIState.updating} />
           </div>
           <div>
-            <button type="submit">Add</button>
+            <button type="submit" disabled={loading}>{loading ? "Adding..." : "Add"}</button>
           </div>
         </form>
+        {tasksError && <p style={{ display: 'block', marginBlock: '.2rem', color: 'red', fontStyle: 'italic' }}>{tasksError.message}</p>}
       </div>
     </>
   )
