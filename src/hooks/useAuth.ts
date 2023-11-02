@@ -42,6 +42,7 @@ export default function UseAuth() {
       }
       if (!user && unsubscribe !== null) {
         unsubscribe();
+        console.log('unsubscribe was called.')
       }
     });
     return unsub;

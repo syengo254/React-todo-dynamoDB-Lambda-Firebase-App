@@ -36,6 +36,7 @@ export function UseTasks() {
   };
 
   const updateTask = (task: Task) => {
+    if (task === undefined) return;
     const updatedRef = doc(db, "tasks/" + task.id);
 
     setLoading(true);
@@ -51,6 +52,7 @@ export function UseTasks() {
   }
 
   const deleteTask = (taskId: Task['id']) => {
+    if (taskId === undefined) return;
     const taskUpdate = doc(db, "tasks/" + taskId);
     setLoading(true);
     deleteDoc(taskUpdate)
@@ -65,11 +67,11 @@ export function UseTasks() {
     setLoading(true);
 
     const unsub = tasksRef.onSnapshot((qSnapshot) => {
-      const _tasks: unknown[] = [];
+      const _tasks = [] as Task[];
       qSnapshot.forEach((doc) => {
-        _tasks.push({ ...doc.data(), id: doc.id });
+        _tasks.push({ ...doc.data(), id: doc.id } as Task);
       });
-      setTasks(_tasks as Task[]);
+      setTasks(_tasks);
       setLoading(false);
       setUnsubscribe(unsub);
     }, (error) => {
@@ -78,5 +80,5 @@ export function UseTasks() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return user ? { tasks, createTask, updateTask, deleteTask, tasksError, loading } : {};
+  return { tasks: user ? tasks : [], createTask, updateTask, deleteTask, tasksError, loading };
 }
