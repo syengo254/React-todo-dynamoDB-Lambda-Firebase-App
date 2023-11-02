@@ -79,7 +79,6 @@ export function UseTasks() {
     }, (error) => {
       setTasksError(error);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { tasks: user ? tasks : [], createTask, updateTask, deleteTask, tasksError, loading };
