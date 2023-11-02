@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { addDoc, updateDoc, doc, deleteDoc, collection } from 'firebase/firestore';
+import { updateDoc, doc, deleteDoc } from 'firebase/firestore';
 import firebase, { db } from "../firebase";
 import UseAuth from './useAuth';
 
@@ -25,8 +25,10 @@ export function UseTasks() {
 
     try {
       setLoading(true);
-      const docRef = await addDoc(collection(db, "tasks"), newTask)
-      console.log("added new task with ID:", docRef.id);
+      const createFunc = firebase.functions().httpsCallable('createTask');
+
+      const docRef = await createFunc({ task: newTask });
+      console.log("added new task with ID:", docRef.data._path.segments[1]);
     } catch (e) {
       console.log(e);
       setTasksError(e as Error)
