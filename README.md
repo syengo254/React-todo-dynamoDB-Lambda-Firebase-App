@@ -13,6 +13,10 @@ Checkout any branch mentioned above and run the following commands:
 1. ``` yarn install ```
 2. ``` yarn run dev ```
 
+
+## Live Demo
+URL: https://local-dev-projects.web.app/
+
 The app should then run locally on port 5173.
 
 The backends for the cloud providers code is just included as the cloud infrastructure was manually created.
