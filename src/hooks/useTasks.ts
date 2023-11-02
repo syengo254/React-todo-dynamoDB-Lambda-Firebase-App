@@ -11,7 +11,7 @@ export type Task = {
 }
 
 export function UseTasks() {
-  const { user, setUnsubscribe } = UseAuth();
+  const { user } = UseAuth();
 
   const [tasks, setTasks] = React.useState<Task[]>([]);
   const [tasksError, setTasksError] = React.useState<Error | null>(null);
@@ -66,14 +66,13 @@ export function UseTasks() {
 
     setLoading(true);
 
-    const unsub = tasksRef.onSnapshot((qSnapshot) => {
+    tasksRef.onSnapshot((qSnapshot) => {
       const _tasks = [] as Task[];
       qSnapshot.forEach((doc) => {
         _tasks.push({ ...doc.data(), id: doc.id } as Task);
       });
       setTasks(_tasks);
       setLoading(false);
-      setUnsubscribe(unsub);
     }, (error) => {
       setTasksError(error);
     });
