@@ -20,3 +20,13 @@ exports.createTask = functions.https.onCall((data, context) => {
   const task = data.task;
   return admin.firestore().collection("tasks").add(task);
 });
+
+// delete task
+exports.deleteTask = functions.https.onCall((data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError("unauthenticated", "Not authorised!");
+  }
+  const taskId = data.taskId;
+
+  return admin.firestore().collection("tasks").doc(taskId).delete();
+});

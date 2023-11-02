@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { updateDoc, doc } from 'firebase/firestore';
 import firebase, { db } from "../firebase";
 import UseAuth from './useAuth';
 
@@ -54,10 +54,11 @@ export function UseTasks() {
   }
 
   const deleteTask = (taskId: Task['id']) => {
-    if (taskId === undefined) return;
-    const taskUpdate = doc(db, "tasks/" + taskId);
     setLoading(true);
-    deleteDoc(taskUpdate)
+    firebase.functions().httpsCallable('deleteTask')({ taskId })
+      .then((res) => {
+        console.log(res);
+      })
       .catch(e => {
         console.log(e);
       }).finally(() => setLoading(false));
