@@ -81,7 +81,16 @@ function App() {
                           disabled={loading} />
                       </label>
                     </div>
-                    <button disabled={loading} onClick={() => removeTask(task.id as number)} type='button'>&times;</button>
+                    <button
+                      disabled={loading}
+                      onClick={() => {
+                        if (window.confirm(`Proceed to delete task:\n'${task.title}'?`)) {
+                          removeTask(task.id as number);
+                        }
+                      }}
+                      type='button'>
+                      &times;
+                    </button>
                   </li>
                 )
               })
