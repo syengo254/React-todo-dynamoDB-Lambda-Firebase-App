@@ -10,7 +10,13 @@ export type Task = {
 }
 
 function App() {
-  const { tasks, deleteTask, createTask, updateTask } = UseTasks();
+  const {
+    tasks,
+    deleteTask,
+    createTask,
+    updateTask,
+    loading,
+    error } = UseTasks();
 
   const [newTask, setNewTask] = React.useState('');
 
@@ -41,12 +47,19 @@ function App() {
         <form onSubmit={onSubmit}>
           <div className='task-input'>
             <label htmlFor="task-name">Task name:</label>
-            <input type="text" id="task-name" value={newTask} onChange={(e) => setNewTask(e.target.value)} placeholder='Type your task here' />
+            <input
+              type="text"
+              id="task-name"
+              value={newTask}
+              onChange={(e) => setNewTask(e.target.value)}
+              placeholder='Type your task here...'
+              disabled={loading} />
           </div>
           <div>
-            <button type="submit">Add</button>
+            <button type="submit" disabled={loading && newTask.length > 0}>{(loading && newTask.length > 0) ? "Adding..." : "Add"}</button>
           </div>
         </form>
+        {error && <p className='error'>{error}</p>}
       </div>
       <div className='task-list'>
         {!tasks.length && <span className='no-tasks'>You have no tasks</span>}
@@ -58,9 +71,17 @@ function App() {
                   <li key={task.id + task.title}>
                     <div className='task-name'>
                       <div>{index + 1}. {task.title}</div>
-                      <label>Mark complete: <input type='checkbox' id={'check' + task.id} checked={task.completed} onChange={() => markComplete(task)} /></label>
+                      <label>
+                        Mark complete:
+                        <input
+                          type='checkbox'
+                          id={'check' + task.id}
+                          checked={task.completed}
+                          onChange={() => markComplete(task)}
+                          disabled={loading} />
+                      </label>
                     </div>
-                    <button onClick={() => removeTask(task.id as number)} type='button'>&times;</button>
+                    <button disabled={loading} onClick={() => removeTask(task.id as number)} type='button'>&times;</button>
                   </li>
                 )
               })

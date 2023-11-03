@@ -89,3 +89,10 @@ div.task-input {
 .no-tasks {
   font-style: italic;
 }
+
+.error {
+  color: orangered;
+  font-style: italic;
+  font-size: .9rem;
+  padding: .2rem;
+}
