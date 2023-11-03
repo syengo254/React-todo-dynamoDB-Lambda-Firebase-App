@@ -17,6 +17,12 @@ export function UseTasks() {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
 
+  if (baseURL === undefined) {
+    throw new Error('Base URL is not set');
+  }
+
+  const clearError = () => setError('');
+
   const createTask = async (task: Task) => {
     try {
       task.id = uuidv4();
@@ -30,6 +36,7 @@ export function UseTasks() {
         ]));
         setLoading(false);
         console.log(await response.text());
+        clearError();
       }
     } catch (e) {
       setError((e as Error).message);
@@ -51,6 +58,7 @@ export function UseTasks() {
           })
         });
         setLoading(false);
+        clearError();
       }
     } catch (e) {
       setError((e as Error).message);
@@ -69,6 +77,7 @@ export function UseTasks() {
           return oldTasks.filter(({ id }) => id !== taskId);
         });
         setLoading(false);
+        clearError();
       }
     } catch (e) {
       setError((e as Error).message);
@@ -77,7 +86,10 @@ export function UseTasks() {
 
   React.useEffect(() => {
     fetchTasks()
-      .then(results => setTasks(results))
+      .then(results => {
+        setTasks(results);
+        clearError();
+      })
       .catch(e => setError((e as Error).message));
   }, []);
 
