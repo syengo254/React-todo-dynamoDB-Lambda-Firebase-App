@@ -9,9 +9,11 @@ This repo has 3 branches:
 
 
 ## Instructions
-Checkout any branch mentioned above and run the following commands:
-1. ``` yarn install ```
-2. ``` yarn run dev ```
+1. Copy the .example.env file to .env
+2. Checkout any branch mentioned above and run the following commands:
+    NOTE: You might need to enter the appropriate .env config values
+      1. ``` yarn install ```
+      2. ``` yarn run dev ```
 
 The app should then run locally on port 5173.
 
